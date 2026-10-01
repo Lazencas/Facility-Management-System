@@ -72,5 +72,19 @@
     </update>
 
 
+    <update id="approve">
+        UPDATE access_requests
+        SET status = #{newStatus},
+        updated_at = CURRENT_TIMESTAMP,
+        reviewed_by = #{reviewerId},
+        reviewed_at = CURRENT_TIMESTAMP
+        WHERE
+        id = #{id} AND
+        user_id != #{reviewerId} AND
+        status = #{currentStatus}
+    </update>
+
+
+
 
 </mapper>

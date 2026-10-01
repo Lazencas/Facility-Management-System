@@ -21,4 +21,9 @@ public interface AccessRequestMapper {
                      @Param("newStatus") AccessRequestStatus newStatus
     );
 
+    int approve(@Param("id") Long id, @Param("reviewerId") Long reviewerId,
+                @Param("currentStatus") AccessRequestStatus currentStatus,
+                @Param("newStatus") AccessRequestStatus newStatus
+    );
+
 }

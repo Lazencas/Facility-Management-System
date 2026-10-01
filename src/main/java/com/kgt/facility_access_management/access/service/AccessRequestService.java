@@ -88,4 +88,44 @@ public class AccessRequestService {
 
     }
 
+    public void approveRequest(Long accessRequestId, Long reviewerId) {
+        // 접근 요청 조회
+        AccessRequest accessRequest =
+                accessRequestMapper.findById(accessRequestId);
+
+        if (accessRequest == null) {
+            throw new IllegalArgumentException(
+                    "해당 접근요청은 존재하지 않습니다."
+            );
+        }
+
+        // 자기 신청 승인 금지
+        if (accessRequest.getUserId().equals(reviewerId)) {
+            throw new IllegalArgumentException(
+                    "본인의 접근요청은 직접 승인할 수 없습니다."
+            );
+        }
+
+        // PENDING 상태만 승인 가능
+        if (accessRequest.getStatus() != AccessRequestStatus.PENDING) {
+            throw new IllegalArgumentException(
+                    "PENDING 상태의 신청만 승인할 수 있습니다."
+            );
+        }
+
+        // 조건부 승인
+        int updatedRows = accessRequestMapper.approve(
+                accessRequestId,
+                reviewerId,
+                AccessRequestStatus.PENDING,
+                AccessRequestStatus.APPROVED
+        );
+
+        // 조회 이후 다른 요청이 먼저 상태를 변경한 경우
+        if (updatedRows == 0) {
+            throw new IllegalStateException(
+                    "접근요청 상태가 변경되어 승인할 수 없습니다."
+            );
+        }
+    }
 }
