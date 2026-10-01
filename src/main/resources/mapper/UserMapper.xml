@@ -22,4 +22,19 @@
 
     </select>
 
+    <select id="findById"
+            resultType="com.kgt.facility_access_management.user.domain.User">
+        SELECT
+        id,
+        login_id,
+        password_hash,
+        name,
+        role,
+        active,
+        created_at,
+        updated_at
+        FROM users
+        WHERE id = #{id}
+    </select>
+
 </mapper>

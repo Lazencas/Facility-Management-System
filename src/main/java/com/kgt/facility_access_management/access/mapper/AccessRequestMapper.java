@@ -5,6 +5,7 @@ import com.kgt.facility_access_management.access.domain.AccessRequestStatus;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -32,6 +33,12 @@ public interface AccessRequestMapper {
             @Param("rejectReason") String rejectReason,
             @Param("currentStatus") AccessRequestStatus currentStatus,
             @Param("newStatus") AccessRequestStatus newStatus
+    );
+
+    AccessRequest findValidApprovedRequest(
+            @Param("userId") Long userId,
+            @Param("facilityId") Long facilityId,
+            @Param("now") LocalDateTime now
     );
 
 }

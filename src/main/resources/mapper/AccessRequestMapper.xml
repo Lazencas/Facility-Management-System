@@ -96,6 +96,33 @@
         AND user_id != #{reviewerId}
     </update>
 
+    <select id="findValidApprovedRequest"
+            resultType="com.kgt.facility_access_management.access.domain.AccessRequest">
+
+        SELECT
+        id,
+        user_id,
+        facility_id,
+        status,
+        request_reason,
+        access_start_at,
+        access_end_at,
+        reviewed_by,
+        reviewed_at,
+        reject_reason,
+        created_at,
+        updated_at
+        FROM access_requests
+        WHERE user_id = #{userId}
+        AND facility_id = #{facilityId}
+        AND status = 'APPROVED'
+        AND access_start_at <![CDATA[ <= ]]> #{now}
+        AND access_end_at <![CDATA[ >= ]]> #{now}
+        ORDER BY access_end_at DESC
+        LIMIT 1
+
+    </select>
+
 
 
 
