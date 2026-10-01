@@ -35,10 +35,9 @@ public interface AccessRequestMapper {
             @Param("newStatus") AccessRequestStatus newStatus
     );
 
-    AccessRequest findValidApprovedRequest(
+    AccessRequest findApprovedRequest(
             @Param("userId") Long userId,
-            @Param("facilityId") Long facilityId,
-            @Param("now") LocalDateTime now
+            @Param("facilityId") Long facilityId
     );
 
 }
