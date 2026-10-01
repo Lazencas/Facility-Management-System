@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kgt.facility_access_management.access.mapper.AccessLogMapper">
+
+    <insert id="save"
+            useGeneratedKeys="true"
+            keyProperty="id">
+
+        INSERT INTO access_logs (
+        user_id,
+        facility_id,
+        access_request_id,
+        result,
+        decision_reason,
+        accessed_at
+        )
+        VALUES (
+        #{userId},
+        #{facilityId},
+        #{accessRequestId},
+        #{result},
+        #{decisionReason},
+        #{accessedAt}
+        )
+
+    </insert>
+
+</mapper>
