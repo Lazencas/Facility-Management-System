@@ -28,4 +28,52 @@
 
     </insert>
 
+
+    <select id="search"
+            resultType="com.kgt.facility_access_management.access.domain.AccessLog">
+
+        SELECT
+        al.id,
+        al.user_id AS userId,
+        al.facility_id AS facilityId,
+        al.access_request_id AS accessRequestId,
+        al.result,
+        al.decision_reason AS decisionReason,
+        al.accessed_at AS accessedAt
+        FROM access_logs al
+
+        JOIN users u
+        ON al.user_id = u.id
+
+        JOIN facilities f
+        ON al.facility_id = f.id
+
+        <where>
+
+            <if test="userName != null and userName != ''">
+                AND u.name LIKE CONCAT('%', #{userName}, '%')
+            </if>
+
+            <if test="facilityName != null and facilityName != ''">
+                AND f.name LIKE CONCAT('%', #{facilityName}, '%')
+            </if>
+
+            <if test="result != null">
+                AND al.result = #{result}
+            </if>
+
+            <if test="from != null">
+                AND al.accessed_at >= #{from}
+            </if>
+
+            <if test="to != null">
+                AND al.accessed_at &lt;= #{to}
+            </if>
+
+        </where>
+
+        ORDER BY al.accessed_at DESC
+
+    </select>
+
 </mapper>

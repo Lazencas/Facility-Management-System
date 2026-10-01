@@ -4,6 +4,7 @@ import com.kgt.facility_access_management.access.domain.AccessDecisionReason;
 import com.kgt.facility_access_management.access.domain.AccessLog;
 import com.kgt.facility_access_management.access.domain.AccessRequest;
 import com.kgt.facility_access_management.access.domain.AccessResult;
+import com.kgt.facility_access_management.access.dto.AccessLogSearchConditionDTO;
 import com.kgt.facility_access_management.access.mapper.AccessLogMapper;
 import com.kgt.facility_access_management.access.mapper.AccessRequestMapper;
 import com.kgt.facility_access_management.common.exception.BusinessException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class AccessService {
@@ -230,4 +232,12 @@ public class AccessService {
             );
         }
     }
+
+    public List<AccessLog> searchAccessLogs(
+            AccessLogSearchConditionDTO condition
+    ) {
+        return accessLogMapper.search(condition);
+    }
+
+
 }
