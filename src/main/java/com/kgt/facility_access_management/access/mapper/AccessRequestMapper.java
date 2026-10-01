@@ -26,4 +26,12 @@ public interface AccessRequestMapper {
                 @Param("newStatus") AccessRequestStatus newStatus
     );
 
+    int reject(
+            @Param("id") Long id,
+            @Param("reviewerId") Long reviewerId,
+            @Param("rejectReason") String rejectReason,
+            @Param("currentStatus") AccessRequestStatus currentStatus,
+            @Param("newStatus") AccessRequestStatus newStatus
+    );
+
 }

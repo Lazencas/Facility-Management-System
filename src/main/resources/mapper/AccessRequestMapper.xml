@@ -84,6 +84,18 @@
         status = #{currentStatus}
     </update>
 
+    <update id="reject">
+        UPDATE access_requests
+        SET status = #{newStatus},
+        reviewed_by = #{reviewerId},
+        reviewed_at = CURRENT_TIMESTAMP,
+        reject_reason = #{rejectReason},
+        updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+        AND status = #{currentStatus}
+        AND user_id != #{reviewerId}
+    </update>
+
 
 
 

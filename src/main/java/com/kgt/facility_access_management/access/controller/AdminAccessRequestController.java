@@ -33,4 +33,25 @@ public class AdminAccessRequestController {
 
         return ResponseEntity.ok("승인 성공");
     }
+
+    @PostMapping("/{accessRequestId}/reject")
+    public ResponseEntity<String> reject(
+            @PathVariable Long accessRequestId,
+            @RequestParam String rejectReason,
+            HttpSession session
+    ) {
+        User loginUser =
+                (User) session.getAttribute("LOGIN_USER");
+
+        accessRequestService.rejectRequest(
+                accessRequestId,
+                loginUser.getId(),
+                rejectReason
+        );
+
+        return ResponseEntity.ok("반려 성공");
+    }
+
+
+
 }

@@ -128,4 +128,62 @@ public class AccessRequestService {
             );
         }
     }
+
+
+    public void rejectRequest(
+            Long accessRequestId,
+            Long reviewerId,
+            String rejectReason
+    ) {
+
+        // 접근 요청 조회
+        AccessRequest accessRequest =
+                accessRequestMapper.findById(accessRequestId);
+
+        if (accessRequest == null) {
+            throw new IllegalArgumentException(
+                    "해당 접근요청은 존재하지 않습니다."
+            );
+        }
+
+        // 자기 신청 반려 금지
+        if (accessRequest.getUserId().equals(reviewerId)) {
+            throw new IllegalArgumentException(
+                    "본인의 접근요청은 직접 반려할 수 없습니다."
+            );
+        }
+
+        // PENDING 상태만 반려 가능
+        if (accessRequest.getStatus() != AccessRequestStatus.PENDING) {
+            throw new IllegalArgumentException(
+                    "PENDING 상태의 신청만 반려할 수 있습니다."
+            );
+        }
+
+        // 반려 사유 필수
+        if (rejectReason == null || rejectReason.isBlank()) {
+            throw new IllegalArgumentException(
+                    "반려 사유를 입력해야 합니다."
+            );
+        }
+
+        int updatedRows = accessRequestMapper.reject(
+                accessRequestId,
+                reviewerId,
+                rejectReason,
+                AccessRequestStatus.PENDING,
+                AccessRequestStatus.REJECTED
+        );
+
+        // 조회 후 UPDATE 전에 다른 요청에서 상태가 변경된 경우
+        if (updatedRows == 0) {
+            throw new IllegalStateException(
+                    "접근요청 상태가 변경되어 반려할 수 없습니다."
+            );
+        }
+    }
+
+
+
+
 }
