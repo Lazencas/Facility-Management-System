@@ -2,6 +2,7 @@ package com.kgt.facility_access_management.access.mapper;
 
 import com.kgt.facility_access_management.access.domain.AccessRequest;
 import com.kgt.facility_access_management.access.domain.AccessRequestStatus;
+import com.kgt.facility_access_management.access.dto.AccessRequestSearchConditionDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -39,5 +40,7 @@ public interface AccessRequestMapper {
             @Param("userId") Long userId,
             @Param("facilityId") Long facilityId
     );
+
+    List<AccessRequest> search(AccessRequestSearchConditionDTO condition);
 
 }

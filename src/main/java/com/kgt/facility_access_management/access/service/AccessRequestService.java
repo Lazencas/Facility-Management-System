@@ -3,11 +3,14 @@ package com.kgt.facility_access_management.access.service;
 import com.kgt.facility_access_management.access.domain.AccessRequest;
 import com.kgt.facility_access_management.access.domain.AccessRequestStatus;
 import com.kgt.facility_access_management.access.dto.AccessRequestCreateForm;
+import com.kgt.facility_access_management.access.dto.AccessRequestSearchConditionDTO;
 import com.kgt.facility_access_management.access.mapper.AccessRequestMapper;
 import com.kgt.facility_access_management.common.exception.BusinessException;
 import com.kgt.facility_access_management.facility.domain.Facility;
 import com.kgt.facility_access_management.facility.service.FacilityService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AccessRequestService {
@@ -215,5 +218,11 @@ public class AccessRequestService {
                     "PENDING 상태의 접근요청만 처리할 수 있습니다."
             );
         }
+    }
+
+    public List<AccessRequest> searchRequests(
+            AccessRequestSearchConditionDTO condition
+    ) {
+        return accessRequestMapper.search(condition);
     }
 }

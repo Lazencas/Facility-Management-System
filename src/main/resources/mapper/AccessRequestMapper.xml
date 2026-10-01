@@ -121,6 +121,51 @@
 
     </select>
 
+    <select id="search"
+            resultType="com.kgt.facility_access_management.access.domain.AccessRequest">
+
+        SELECT
+        id,
+        user_id,
+        facility_id,
+        status,
+        request_reason,
+        access_start_at,
+        access_end_at,
+        reviewed_by,
+        reviewed_at,
+        reject_reason,
+        created_at,
+        updated_at
+        FROM access_requests
+
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+
+            <if test="facilityId != null">
+                AND facility_id = #{facilityId}
+            </if>
+
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+
+            <if test="from != null">
+                AND created_at >= #{from}
+            </if>
+
+            <if test="to != null">
+                AND created_at &lt;= #{to}
+            </if>
+
+
+        </where>
+
+        ORDER BY created_at DESC
+
+    </select>
 
 
 

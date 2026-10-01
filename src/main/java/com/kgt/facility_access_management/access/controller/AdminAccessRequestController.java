@@ -1,10 +1,14 @@
 package com.kgt.facility_access_management.access.controller;
 
+import com.kgt.facility_access_management.access.domain.AccessRequest;
+import com.kgt.facility_access_management.access.dto.AccessRequestSearchConditionDTO;
 import com.kgt.facility_access_management.access.service.AccessRequestService;
 import com.kgt.facility_access_management.user.domain.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/access-requests")
@@ -52,6 +56,16 @@ public class AdminAccessRequestController {
         return ResponseEntity.ok("반려 성공");
     }
 
+    @GetMapping
+    public ResponseEntity<List<AccessRequest>> search(
+            @ModelAttribute AccessRequestSearchConditionDTO condition
+    ) {
+
+        List<AccessRequest> accessRequests =
+                accessRequestService.searchRequests(condition);
+
+        return ResponseEntity.ok(accessRequests);
+    }
 
 
 }
