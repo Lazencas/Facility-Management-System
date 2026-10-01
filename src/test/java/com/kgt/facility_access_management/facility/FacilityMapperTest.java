@@ -40,9 +40,9 @@ class FacilityMapperTest {
 
     @Test
     void 모든시설찾기() {
-        //이미 DB에 3개 시설데이터 들어가 있음
+        // src/test/resources/data.sql의 독립된 테스트 데이터
         List<Facility> facilities = facilityMapper.findAll();
-        assertThat(facilities.size()).isSameAs(3);
+        assertThat(facilities).hasSize(3);
     }
 
     @Test

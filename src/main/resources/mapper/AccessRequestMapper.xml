@@ -116,7 +116,14 @@
         WHERE user_id = #{userId}
         AND facility_id = #{facilityId}
         AND status = 'APPROVED'
-        ORDER BY access_end_at DESC
+        <!-- 유효한 승인을 먼저 선택한다. 없으면 기간 밖 승인을 반환하여
+             NO_APPROVAL과 OUTSIDE_VALID_PERIOD를 구별한다. -->
+        ORDER BY CASE
+            WHEN access_start_at &lt;= #{now} AND access_end_at >= #{now} THEN 0
+            ELSE 1
+        END,
+        access_end_at DESC,
+        id DESC
         LIMIT 1
 
     </select>

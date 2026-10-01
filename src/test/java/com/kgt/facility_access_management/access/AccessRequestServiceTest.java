@@ -7,6 +7,7 @@ import com.kgt.facility_access_management.access.mapper.AccessRequestMapper;
 import com.kgt.facility_access_management.access.service.AccessRequestService;
 import com.kgt.facility_access_management.facility.domain.Facility;
 import com.kgt.facility_access_management.facility.service.FacilityService;
+import com.kgt.facility_access_management.common.exception.BusinessException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -99,7 +100,7 @@ public class AccessRequestServiceTest {
         // when & then
         assertThatThrownBy(() ->
                 accessRequestService.createRequest(1L, form)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(BusinessException.class).hasMessage("비활성화된 시설입니다.");
 
         //비활성 시설이 DB까지 안가게 차단 되는지
         verify(accessRequestMapper, never())
@@ -134,7 +135,7 @@ public class AccessRequestServiceTest {
         // when & then
         assertThatThrownBy(() ->
                 accessRequestService.createRequest(1L, form)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(BusinessException.class).hasMessage("접근 시작 시간은 종료시간보다 빨라야 합니다.");
 
         verify(accessRequestMapper, never())
                 .save(any());
@@ -153,7 +154,7 @@ public class AccessRequestServiceTest {
         // when & then
         assertThatThrownBy(() ->
                 accessRequestService.createRequest(1L, form)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(BusinessException.class).hasMessage("시설을 찾을 수 없습니다.");
 
         verify(accessRequestMapper, never())
                 .save(any());

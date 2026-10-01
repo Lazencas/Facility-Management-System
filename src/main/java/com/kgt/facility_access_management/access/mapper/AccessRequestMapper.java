@@ -38,7 +38,8 @@ public interface AccessRequestMapper {
 
     AccessRequest findApprovedRequest(
             @Param("userId") Long userId,
-            @Param("facilityId") Long facilityId
+            @Param("facilityId") Long facilityId,
+            @Param("now") LocalDateTime now
     );
 
     List<AccessRequest> search(AccessRequestSearchConditionDTO condition);

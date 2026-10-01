@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.Clock;
 import java.util.List;
 
 @Service
@@ -30,17 +31,20 @@ public class AccessService {
     private final FacilityService facilityService;
     private final AccessRequestMapper accessRequestMapper;
     private final AccessLogMapper accessLogMapper;
+    private final Clock clock;
 
     public AccessService(
             UserMapper userMapper,
             FacilityService facilityService,
             AccessRequestMapper accessRequestMapper,
-            AccessLogMapper accessLogMapper
+            AccessLogMapper accessLogMapper,
+            Clock clock
     ) {
         this.userMapper = userMapper;
         this.facilityService = facilityService;
         this.accessRequestMapper = accessRequestMapper;
         this.accessLogMapper = accessLogMapper;
+        this.clock = clock;
     }
 
     @Transactional
@@ -66,7 +70,7 @@ public class AccessService {
                 facilityId
         );
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(clock);
 
         // 사용자 존재 여부
         User user = userMapper.findById(userId);
@@ -139,7 +143,8 @@ public class AccessService {
         AccessRequest approvedRequest =
                 accessRequestMapper.findApprovedRequest(
                         userId,
-                        facilityId
+                        facilityId,
+                        now
                 );
 
         // 승인 신청 자체가 없는 경우
