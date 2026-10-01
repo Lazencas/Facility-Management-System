@@ -60,4 +60,17 @@
         #{accessEndAt}
         )
     </insert>
+
+    <update id="updateStatus">
+        UPDATE access_requests
+        SET status = #{newStatus},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE
+        id = #{id} AND
+        user_id = #{userId} AND
+        status = #{currentStatus}
+    </update>
+
+
+
 </mapper>
