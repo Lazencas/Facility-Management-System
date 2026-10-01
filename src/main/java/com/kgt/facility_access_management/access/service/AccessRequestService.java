@@ -4,116 +4,133 @@ import com.kgt.facility_access_management.access.domain.AccessRequest;
 import com.kgt.facility_access_management.access.domain.AccessRequestStatus;
 import com.kgt.facility_access_management.access.dto.AccessRequestCreateForm;
 import com.kgt.facility_access_management.access.mapper.AccessRequestMapper;
-import com.kgt.facility_access_management.auth.service.AuthService;
+import com.kgt.facility_access_management.common.exception.BusinessException;
 import com.kgt.facility_access_management.facility.domain.Facility;
-import com.kgt.facility_access_management.facility.mapper.FacilityMapper;
 import com.kgt.facility_access_management.facility.service.FacilityService;
-import com.kgt.facility_access_management.user.mapper.UserMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class AccessRequestService {
+
     private final AccessRequestMapper accessRequestMapper;
     private final FacilityService facilityService;
 
-    public AccessRequestService(AccessRequestMapper accessRequestMapper, FacilityService facilityService, AuthService authService, UserMapper userMapper) {
+    public AccessRequestService(
+            AccessRequestMapper accessRequestMapper,
+            FacilityService facilityService
+    ) {
         this.accessRequestMapper = accessRequestMapper;
         this.facilityService = facilityService;
     }
 
-    public AccessRequest createRequest(Long userId, AccessRequestCreateForm form) {
-        //시설을 조회
+
+    public AccessRequest createRequest(
+            Long userId,
+            AccessRequestCreateForm form
+    ) {
+
+        // 시설 조회
         Facility facility = facilityService.findById(form.getFacilityId())
-                .orElseThrow(() -> new IllegalArgumentException("시설을 찾을 수 없습니다."));
+                .orElseThrow(() ->
+                        new BusinessException("시설을 찾을 수 없습니다.")
+                );
 
-        //활성시설인지 체크
+        // 활성 시설인지 확인
         if (!facility.isActive()) {
-            throw new IllegalArgumentException("비활성화된 시설입니다.");
+            throw new BusinessException(
+                    "비활성화된 시설입니다."
+            );
         }
 
-        //접근시작~종료시간 시간검증
+        // 접근 시작/종료 시간 검증
         if (!form.getAccessStartAt().isBefore(form.getAccessEndAt())) {
-            throw new IllegalArgumentException("접근 시작 시간은 종료시간보다 빨라야 합니다.");
+            throw new BusinessException(
+                    "접근 시작 시간은 종료시간보다 빨라야 합니다."
+            );
         }
 
-        //접근요청 객체 생성
         AccessRequest accessRequest = new AccessRequest();
 
-        //userId는 실제로 신청시 입력을 받지 않고, 서버에서 인증한 값으로 덮어쓴다.
-        //세션에서 꺼낸 ID를 사용, 다른사람 ID로 신청못하게 함
+        // userId는 클라이언트 입력이 아닌 세션 사용자 ID 사용
         accessRequest.setUserId(userId);
         accessRequest.setFacilityId(form.getFacilityId());
         accessRequest.setRequestReason(form.getRequestReason());
         accessRequest.setAccessStartAt(form.getAccessStartAt());
         accessRequest.setAccessEndAt(form.getAccessEndAt());
-        //서버에서 무조건 PENDING값으로 설정
+
+        // 최초 신청 상태는 항상 PENDING
         accessRequest.setStatus(AccessRequestStatus.PENDING);
 
-        //이 조건들을 만족했을때만 저장
         accessRequestMapper.save(accessRequest);
 
         return accessRequest;
     }
 
-    public void cancelRequest(Long accessRequestId, Long userId) {
 
-        // 접근요청을 조회
-        AccessRequest accessRequest = accessRequestMapper.findById(accessRequestId);
-        if (accessRequest == null) {
-            throw new IllegalArgumentException("해당 접근요청은 존재 하지 않습니다.");
-        }
+    public void cancelRequest(
+            Long accessRequestId,
+            Long userId
+    ) {
 
-        // 본인만이 변경할 수 있게, 신청 유저아이디와 해당 유저아이디 비교
-        if (!accessRequest.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("신청한 본인만 취소 가능합니다.");
-        }
-
-        // PENDING상태만 CANCELLED로 변경 할 수있으니 상태체크
-        if (accessRequest.getStatus() != AccessRequestStatus.PENDING) {
-            throw new IllegalArgumentException("PENDING상태의 신청만 취소할 수 있습니다.");
-        }
-
-        // 이 조건들을 통과하면 업데이트문 실행
-        int updatedRows = accessRequestMapper.updateStatus(accessRequestId, userId, AccessRequestStatus.PENDING, AccessRequestStatus.CANCELLED);
-
-        // 서비스에서 상태확인하고나서, UPDATE하기전에 다른요청이 먼저 상태를 변경 할 수도있다.
-        // 그 사이에 변경점이 없을때만 통과임
-        if (updatedRows == 0) {
-            throw new IllegalStateException("접근요청 상태가 변경되어 취소할 수 없습니다.");
-        }
-
-
-
-    }
-
-    public void approveRequest(Long accessRequestId, Long reviewerId) {
-        // 접근 요청 조회
         AccessRequest accessRequest =
                 accessRequestMapper.findById(accessRequestId);
 
         if (accessRequest == null) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
+                    "해당 접근요청은 존재하지 않습니다."
+            );
+        }
+
+        // 본인 신청만 취소 가능
+        if (!accessRequest.getUserId().equals(userId)) {
+            throw new BusinessException(
+                    "신청한 본인만 취소 가능합니다."
+            );
+        }
+
+        // 상태 전이 검증
+        validatePendingStatus(accessRequest);
+
+        int updatedRows = accessRequestMapper.updateStatus(
+                accessRequestId,
+                userId,
+                AccessRequestStatus.PENDING,
+                AccessRequestStatus.CANCELLED
+        );
+
+        // 조회 후 UPDATE 사이에 상태가 변경된 경우
+        if (updatedRows == 0) {
+            throw new BusinessException(
+                    "접근요청 상태가 변경되어 취소할 수 없습니다."
+            );
+        }
+    }
+
+
+    public void approveRequest(
+            Long accessRequestId,
+            Long reviewerId
+    ) {
+
+        AccessRequest accessRequest =
+                accessRequestMapper.findById(accessRequestId);
+
+        if (accessRequest == null) {
+            throw new BusinessException(
                     "해당 접근요청은 존재하지 않습니다."
             );
         }
 
         // 자기 신청 승인 금지
         if (accessRequest.getUserId().equals(reviewerId)) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "본인의 접근요청은 직접 승인할 수 없습니다."
             );
         }
 
-        // PENDING 상태만 승인 가능
-        if (accessRequest.getStatus() != AccessRequestStatus.PENDING) {
-            throw new IllegalArgumentException(
-                    "PENDING 상태의 신청만 승인할 수 있습니다."
-            );
-        }
+        // 상태 전이 검증
+        validatePendingStatus(accessRequest);
 
-        // 조건부 승인
         int updatedRows = accessRequestMapper.approve(
                 accessRequestId,
                 reviewerId,
@@ -121,9 +138,9 @@ public class AccessRequestService {
                 AccessRequestStatus.APPROVED
         );
 
-        // 조회 이후 다른 요청이 먼저 상태를 변경한 경우
+        // 조회 후 UPDATE 사이에 상태가 변경된 경우
         if (updatedRows == 0) {
-            throw new IllegalStateException(
+            throw new BusinessException(
                     "접근요청 상태가 변경되어 승인할 수 없습니다."
             );
         }
@@ -136,33 +153,28 @@ public class AccessRequestService {
             String rejectReason
     ) {
 
-        // 접근 요청 조회
         AccessRequest accessRequest =
                 accessRequestMapper.findById(accessRequestId);
 
         if (accessRequest == null) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "해당 접근요청은 존재하지 않습니다."
             );
         }
 
         // 자기 신청 반려 금지
         if (accessRequest.getUserId().equals(reviewerId)) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "본인의 접근요청은 직접 반려할 수 없습니다."
             );
         }
 
-        // PENDING 상태만 반려 가능
-        if (accessRequest.getStatus() != AccessRequestStatus.PENDING) {
-            throw new IllegalArgumentException(
-                    "PENDING 상태의 신청만 반려할 수 있습니다."
-            );
-        }
+        // 상태 전이 검증
+        validatePendingStatus(accessRequest);
 
         // 반려 사유 필수
         if (rejectReason == null || rejectReason.isBlank()) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "반려 사유를 입력해야 합니다."
             );
         }
@@ -175,15 +187,33 @@ public class AccessRequestService {
                 AccessRequestStatus.REJECTED
         );
 
-        // 조회 후 UPDATE 전에 다른 요청에서 상태가 변경된 경우
+        // 조회 후 UPDATE 사이에 상태가 변경된 경우
         if (updatedRows == 0) {
-            throw new IllegalStateException(
+            throw new BusinessException(
                     "접근요청 상태가 변경되어 반려할 수 없습니다."
             );
         }
     }
 
 
+    /**
+     * 접근 신청 상태 전이 규칙
+     *
+     * PENDING → APPROVED
+     * PENDING → REJECTED
+     * PENDING → CANCELLED
+     *
+     * APPROVED / REJECTED / CANCELLED는 최종 상태이므로
+     * 더 이상 상태 변경을 허용하지 않는다.
+     */
+    private void validatePendingStatus(
+            AccessRequest accessRequest
+    ) {
 
-
+        if (accessRequest.getStatus() != AccessRequestStatus.PENDING) {
+            throw new BusinessException(
+                    "PENDING 상태의 접근요청만 처리할 수 있습니다."
+            );
+        }
+    }
 }
