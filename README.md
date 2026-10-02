@@ -51,7 +51,14 @@ JAVA Spring/Framework Mybatis MySQL Junit
 </details>
 
 ### 4.2 디렉터리 구조
+<details>
+  <summary><strong>ERD 펼쳐보기</strong></summary>
 
+  <br>
+
+ aa
+
+</details>
 
 
 
