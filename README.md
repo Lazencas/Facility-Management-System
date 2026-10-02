@@ -38,7 +38,8 @@ JAVA Spring/Framework Mybatis MySQL Junit
 
   <br>
 
-  <img width="863" height="732" alt="image" src="https://github.com/user-attachments/assets/c3aed5f8-8a7d-43b4-8eac-a9f8e2e0df00" />
+  [Uploading 제목 없는 다이어그램.drawio…]()
+
 </details>
 ### 4.2 디렉터리구조
 
