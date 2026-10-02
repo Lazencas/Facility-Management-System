@@ -44,8 +44,6 @@ JAVA Spring/Framework Mybatis MySQL Junit
 ### 4.2 디렉터리구조
 
 ## 5. 시작 가이드
-## 시작 가이드
-
 ### Requirements
 
 프로젝트 실행을 위해 다음 환경이 필요합니다.
