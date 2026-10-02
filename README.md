@@ -52,11 +52,53 @@ JAVA Spring/Framework Mybatis MySQL Junit
 
 ### 4.2 디렉터리 구조
 <details>
-  <summary><strong>ERD 펼쳐보기</strong></summary>
+  <summary><strong>디렉터리 구조 펼쳐보기</strong></summary>
 
   <br>
 
- aa
+```text id="9brc58"
+facility-access-management
+├── src
+│   ├── main
+│   │   ├── java/com/kgt/facility_access_management
+│   │   │   ├── auth                  # 로그인 · 로그아웃 · 세션 인증
+│   │   │   │   ├── controller
+│   │   │   │   ├── service
+│   │   │   │   └── dto
+│   │   │   │
+│   │   │   ├── user                  # 사용자 정보 및 역할 관리
+│   │   │   │   ├── domain
+│   │   │   │   └── mapper
+│   │   │   │
+│   │   │   ├── facility              # 시설 조회 · 등록 · 수정 · 비활성화
+│   │   │   │   ├── controller
+│   │   │   │   ├── service
+│   │   │   │   ├── mapper
+│   │   │   │   ├── domain
+│   │   │   │   └── dto
+│   │   │   │
+│   │   │   ├── access                # 접근 신청 · 승인/반려 · 접근 판정 · 로그
+│   │   │   │   ├── controller
+│   │   │   │   ├── service
+│   │   │   │   ├── mapper
+│   │   │   │   ├── domain
+│   │   │   │   └── dto
+│   │   │   │
+│   │   │   └── common                # 인증/권한 인터셉터 및 공통 설정
+│   │   │       ├── config
+│   │   │       └── interceptor
+│   │   │
+│   │   └── resources
+│   │       ├── application.properties # DB · MyBatis 설정
+│   │       └── mapper                 # MyBatis SQL Mapper XML
+│   │
+│   └── test
+│       └── java                       # 상태 전이 · 접근 판정 · 검색 테스트
+│
+├── build.gradle
+├── settings.gradle
+└── README.md
+```
 
 </details>
 
