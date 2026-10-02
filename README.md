@@ -49,6 +49,7 @@ JAVA Spring/Framework Mybatis MySQL Junit
   <img width="634" height="573" alt="image" src="https://github.com/user-attachments/assets/88bba476-cd98-44aa-ba21-715c8da95eaa" />
 
 </details>
+
 ### 4.2 디렉터리 구조
   <summary><strong>디렉터리 펼쳐보기</strong></summary>
 
@@ -101,6 +102,7 @@ facility-access-management
 
 
 </details>
+
 ## 5. 시작 가이드
 ### Requirements
 
