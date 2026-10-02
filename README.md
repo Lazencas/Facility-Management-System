@@ -49,12 +49,10 @@ JAVA Spring/Framework Mybatis MySQL Junit
   <img width="634" height="573" alt="image" src="https://github.com/user-attachments/assets/88bba476-cd98-44aa-ba21-715c8da95eaa" />
 
 </details>
-### 4.2 프로젝트구조
-  <summary><strong>프로젝트구조 펼쳐보기</strong></summary>
+### 4.2 디렉터리 구조
+  <summary><strong>디렉터리 펼쳐보기</strong></summary>
 
   <br>
-
-## 4. 프로젝트 구조
 
 ```text id="9brc58"
 facility-access-management
@@ -99,7 +97,9 @@ facility-access-management
 ├── settings.gradle
 └── README.md
 ```
-  
+
+
+
 </details>
 ## 5. 시작 가이드
 ### Requirements
