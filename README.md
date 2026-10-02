@@ -33,6 +33,13 @@ JAVA Spring/Framework Mybatis MySQL Junit
 
 ## 4. 아키텍쳐
 ### 4.1 ERD
+<details>
+  <summary><strong>ERD 펼쳐보기</strong></summary>
+
+  <br>
+
+  <img width="863" height="732" alt="image" src="https://github.com/user-attachments/assets/c3aed5f8-8a7d-43b4-8eac-a9f8e2e0df00" />
+</details>
 ### 4.2 디렉터리구조
 
 ## 5. 실행방법
