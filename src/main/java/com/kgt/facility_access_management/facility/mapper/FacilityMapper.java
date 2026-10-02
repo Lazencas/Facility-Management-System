@@ -20,4 +20,7 @@ public interface FacilityMapper {
     //물리 삭제 대신 active = false
     int deactivate(Long id);
 
+    //시설 정보 수정
+    int update(Facility facility);
+
 }

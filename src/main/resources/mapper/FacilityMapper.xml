@@ -51,6 +51,15 @@
         WHERE id = #{id};
     </update>
 
+    <update id="update">
+        UPDATE facilities
+        SET name = #{name},
+        location = #{location},
+        description = #{description},
+        updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
 
 
 </mapper>

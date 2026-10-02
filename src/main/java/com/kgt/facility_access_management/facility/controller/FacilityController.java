@@ -2,6 +2,7 @@ package com.kgt.facility_access_management.facility.controller;
 
 import com.kgt.facility_access_management.facility.domain.Facility;
 import com.kgt.facility_access_management.facility.dto.FacilityCreateRequest;
+import com.kgt.facility_access_management.facility.dto.FacilityUpdateRequest;
 import com.kgt.facility_access_management.facility.service.FacilityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -61,6 +62,26 @@ public class FacilityController {
         }
 
         return ResponseEntity.ok("시설 비활성화 성공");
+    }
+
+    @PutMapping("/admin/facilities/{facilityId}")
+    public ResponseEntity<?> update(
+            @PathVariable Long facilityId,
+            @RequestBody FacilityUpdateRequest request) {
+
+        Facility facility = new Facility();
+        facility.setName(request.getName());
+        facility.setLocation(request.getLocation());
+        facility.setDescription(request.getDescription());
+
+        Optional<Facility> updatedFacility =
+                facilityService.update(facilityId, facility);
+
+        if (updatedFacility.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(updatedFacility.get());
     }
 
 

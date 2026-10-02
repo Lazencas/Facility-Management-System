@@ -33,4 +33,17 @@ public class FacilityService {
         int updatedRows = facilityMapper.deactivate(id);
         return updatedRows == 1;
     }
+
+    public Optional<Facility> update(Long id, Facility facility) {
+
+        facility.setId(id);
+
+        int result = facilityMapper.update(facility);
+
+        if (result == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(facilityMapper.findById(id));
+    }
 }
