@@ -7,38 +7,32 @@ Facility Access Management 는 시설물과 접근요청을 등록하고, 등록
 JAVA Spring/Framework Mybatis MySQL Junit
 
 ## 3. 핵심 기능
-### 3.1 중복승인과 잘못된 상태전이를 방지하는 조건부 UPDATE
-#### 문제 인식
-승인처리 전에 PENDING(요청대기) 상태인지 확인해도 조회 이후 UPDATE가 실행되기 전 다른 요청이 먼저 승인처리를 완료할 수 있습니다.
-또한 단순히 ID만 기준으로 UPDATE하면 이미 승인되거나 반려된 요청이 다시 처리될 수 있다고 판단했습니다.
+사용자와 시설 그리고 접근요청에 대한 CRUD 및 로그 기록
+<details>
+  <summary><strong>API 명세서 펼쳐보기</strong></summary>
 
-#### 해결
-Service계층에서 현재 상태가 PENDING인지 먼저 검증하고, DB UPDATE에서도 다시 한번 상태조건을 검증했습니다.
-이를 통해 어플리케이션 계층의 상태검증과 DB계층의 조건부 UPDATE를 함께 사용하여 중복승인과 잘못된 상태전이를 방지했습니다.
+  <br>
 
-### 3.2 승인상태와 실제 접근가능 여부를 분리한 접근 판정 로직
-#### 문제 인식
-관리자가 요청을 승인했다고 해서 사용자가 언제든 시설에 접근할 수 있게 하면 안된다고 판단했습니다.
-승인이후에도 실제 접근 시점에서는 다음 조건이 달라질 수 있습니다.
-1.삭제된 사용자 2.삭제된 시설 3.접근허용기간이 맞지 않거나 만료
-
-#### 해결
-APPROVED를 관리자의 요청 승인 상태, ALLOWED / DENIED를 실제 접근 시점의 판정 결과로 분리 했습니다.
-또한 모든 성공과 실패를 AccessLog테이블에 기록하도록 구현하였습니다.
-
-### 3.3 MyBatis 동적 SQL을 이용한 복합 검색
-#### 문제 인식
-관리자의 접근 요청/접근 로그 조회는 하나의 고정조건이 아니라 여러 조건을 선택적으로 조합해야합니다.
-그렇다고 선택가능한 조건의 조합의 수 만큼 기능을 구현하면 유지보수가 어려워질 수 있다고 판단했습니다.
-
-#### 해결
-MyBatis의 동적 SQL을 사용해 실제로 입력된 검색 조건만 WHERE절에 포함되도록 하나의 Mapper쿼리로 구성했습니다.
-예를 들어 상태, 사용자, 시설, 기간 등의 조건을 각각 선택하거나 동시에 조합할 수 있도록 구현했습니다.
-이를 통해 다수의 조회메서드를 만들지 않고 하나의 검색 기능으로 다양한 관리자 조회 요구사항을 처리했습니다.
+  | 기능 | 메소드 | URL | 요청 | 응답 | 권한 |
+| --- | --- | --- | --- | --- | --- |
+| 로그인 | `POST` | `/login` | Body(JSON): `loginId`, `password` | `200 OK` 로그인 성공 / `401 Unauthorized` 로그인 실패 | PUBLIC |
+| 로그아웃 | `POST` | `/logout` | 없음 | `200 OK` 로그아웃 성공 | USER / ADMIN |
+| 시설 목록 조회 | `GET` | `/facilities` | 없음 | `200 OK` `List<Facility>` | USER / ADMIN |
+| 시설 상세 조회 | `GET` | `/facilities/{facilityId}` | Path: `facilityId` | `200 OK` `Facility` / `404 Not Found` | USER / ADMIN |
+| 시설 등록 | `POST` | `/admin/facilities` | Body(JSON): `name`, `location`, `description` | `200 OK` 등록된 `Facility` | ADMIN |
+| 시설 수정 | `PUT` | `/admin/facilities/{facilityId}` | Path: `facilityId` + Body(JSON): `name`, `location`, `description` | `200 OK` 수정된 `Facility` / `404 Not Found` | ADMIN |
+| 시설 비활성화 | `POST` | `/admin/facilities/{facilityId}/deactivate` | Path: `facilityId` | `200 OK` `"시설 비활성화 성공"` / `404 Not Found` | ADMIN |
+| 접근 신청 | `POST` | `/access-requests` | Body(JSON): `facilityId`, `requestReason`, `accessStartAt`, `accessEndAt` | `200 OK` 생성된 `AccessRequest` | USER / ADMIN |
+| 접근 신청 취소 | `POST` | `/access-requests/{accessRequestId}/cancel` | Path: `accessRequestId` | `200 OK` 취소 성공 | 신청자 본인 |
+| 관리자 접근 신청 조회·검색 | `GET` | `/admin/access-requests` | Query: `userId`, `facilityId`, `status`, `from`, `to` (선택) | `200 OK` `List<AccessRequest>` | ADMIN |
+| 접근 신청 승인 | `POST` | `/admin/access-requests/{accessRequestId}/approve` | Path: `accessRequestId` | `200 OK` 승인 성공 | ADMIN |
+| 접근 신청 반려 | `POST` | `/admin/access-requests/{accessRequestId}/reject` | Path: `accessRequestId` + `rejectReason` | `200 OK` 반려 성공 | ADMIN |
+| 시설 접근 시도 | `POST` | `/facilities/{facilityId}/access` | Path: `facilityId` | `200 OK` `ALLOWED` 또는 `DENIED` | USER / ADMIN |
+| 접근 로그 조회·검색 | `GET` | `/admin/access-logs` | Query: `userName`, `facilityName`, `result`, `from`, `to` (선택) | `200 OK` `List<AccessLog>` | ADMIN |
+</details>
 
 ## 4. 아키텍쳐
 ### 4.1 ERD
-### 4.2 API명세서
-### 4.3 디렉터리구조
+### 4.2 디렉터리구조
 
 ## 5. 실행방법
