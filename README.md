@@ -43,4 +43,52 @@ JAVA Spring/Framework Mybatis MySQL Junit
 </details>
 ### 4.2 디렉터리구조
 
-## 5. 실행방법
+## 5. 시작 가이드
+## 시작 가이드
+
+### Requirements
+
+프로젝트 실행을 위해 다음 환경이 필요합니다.
+
+- Java 17+
+- MySQL 8.x
+
+### Installation
+
+```bash
+git clone [GitHub Repository URL]
+cd facility-access-management
+```
+
+MySQL에서 `docs/sql/schema.sql`을 실행하여 데이터베이스와 테이블을 생성합니다.
+
+이후 `application.properties`의 DB 접속 정보를 자신의 환경에 맞게 설정합니다.
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/[DB_NAME]
+spring.datasource.username=[USERNAME]
+spring.datasource.password=[PASSWORD]
+```
+
+### Run
+
+Windows
+
+```bash
+gradlew.bat bootRun
+```
+
+Mac / Linux
+
+```bash
+./gradlew bootRun
+```
+
+정상적으로 실행되면 서버는 기본적으로 아래 주소에서 실행됩니다.
+
+```text
+http://localhost:8080
+```
+
+> 본 프로젝트는 백엔드 API 중심으로 구현되어 있으며, Postman 등의 API 클라이언트를 통해 기능을 확인할 수 있습니다.
+
