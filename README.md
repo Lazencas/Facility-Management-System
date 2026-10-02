@@ -51,13 +51,9 @@ JAVA Spring/Framework Mybatis MySQL Junit
 </details>
 
 ### 4.2 디렉터리 구조
-<detils>
-  <summary><strong>디렉터리 펼쳐보기</strong></summary>
-
-  <br>
 
 
-</details>
+
 
 ## 5. 시작 가이드
 ### Requirements
