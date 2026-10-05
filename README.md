@@ -46,6 +46,7 @@ JAVA Spring/Framework Mybatis MySQL Junit
 - **접근 요청 및 승인 관리**  
 사용자의 시설 접근 요청을 등록하고, 관리자가 승인·반려할 수 있도록 구현했습니다.
 <img width="669" height="184" alt="image" src="https://github.com/user-attachments/assets/ab800c48-b8a4-4599-95f4-268599709a7e" />
+<br>
 
 
 - **권한 및 상태 기반 접근 제어**  
