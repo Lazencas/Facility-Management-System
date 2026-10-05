@@ -41,6 +41,8 @@ JAVA Spring/Framework Mybatis MySQL Junit
 | 접근 로그 조회·검색 | `GET` | `/admin/access-logs` | Query: `userName`, `facilityName`, `result`, `from`, `to` (선택) | `200 OK` `List<AccessLog>` | ADMIN |
 </details>
 
+<br>
+
 - **접근 요청 및 승인 관리**  
 사용자의 시설 접근 요청을 등록하고, 관리자가 승인·반려할 수 있도록 구현했습니다.
 <img width="669" height="184" alt="image" src="https://github.com/user-attachments/assets/ab800c48-b8a4-4599-95f4-268599709a7e" />
