@@ -63,13 +63,23 @@ JAVA Spring/Framework Mybatis MySQL Junit
 
 - **MyBatis 기반 조건 검색**  
 상태, 사용자, 시설, 기간 등의 조건을 조합하여 접근 요청 및 이력을 조회할 수 있도록 구현했습니다.
+<details>
+  <summary><strong>자세히</strong></summary>
+
+  <br>
 <img width="662" height="258" alt="image" src="https://github.com/user-attachments/assets/387a2158-a8e0-45f7-91ba-2ce12cc13b12" />  
+</details>
 
 &nbsp;
 
 - **복합 인덱스를 통한 조회 쿼리 성능 개선**  
 기존의 쿼리와 비교하여 12배 이상 빨라진 성능개선을 이루었습니다.
-<img width="1333" height="740" alt="image" src="https://github.com/user-attachments/assets/a7e216b8-4788-4696-b65c-163d32b3d0fd" />  
+<details>
+  <summary><strong>기존쿼리와 성능비교</strong></summary>
+
+  <br>
+  <img width="1333" height="740" alt="image" src="https://github.com/user-attachments/assets/a7e216b8-4788-4696-b65c-163d32b3d0fd" />  
+</details>
 
 
 
