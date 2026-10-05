@@ -39,6 +39,10 @@ JAVA Spring/Framework Mybatis MySQL Junit
 
 
 
+
+
+## 4. 아키텍쳐
+### 4.1 API 명세서
 <details>
   <summary><strong>API 명세서 펼쳐보기</strong></summary>
 
@@ -62,7 +66,6 @@ JAVA Spring/Framework Mybatis MySQL Junit
 | 접근 로그 조회·검색 | `GET` | `/admin/access-logs` | Query: `userName`, `facilityName`, `result`, `from`, `to` (선택) | `200 OK` `List<AccessLog>` | ADMIN |
 </details>
 
-## 4. 아키텍쳐
 ### 4.1 ERD
 <details>
   <summary><strong>ERD 펼쳐보기</strong></summary>
