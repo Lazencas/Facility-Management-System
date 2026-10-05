@@ -18,12 +18,24 @@ JAVA Spring/Framework Mybatis MySQL Junit
 ## 3. 핵심 기능
 - **접근 요청 및 승인 관리**  
 사용자의 시설 접근 요청을 등록하고, 관리자가 승인·반려할 수 있도록 구현했습니다.
+<img width="669" height="184" alt="image" src="https://github.com/user-attachments/assets/ab800c48-b8a4-4599-95f4-268599709a7e" />
+
 
 - **권한 및 상태 기반 접근 제어**  
 사용자 권한, 요청 상태, 승인 유효기간 등을 검증하여 실제 시설 접근 가능 여부를 판단합니다.
+<img width="1200" height="766" alt="image" src="https://github.com/user-attachments/assets/716aee6b-82de-4a5a-96db-d72606112978" />
+
 
 - **MyBatis 기반 조건 검색**  
 상태, 사용자, 시설, 기간 등의 조건을 조합하여 접근 요청 및 이력을 조회할 수 있도록 구현했습니다.
+<img width="662" height="258" alt="image" src="https://github.com/user-attachments/assets/387a2158-a8e0-45f7-91ba-2ce12cc13b12" />
+
+
+- **복합 인덱스를 통한 조회 쿼리 성능 개선**  
+기존의 쿼리와 비교하여 12배 이상 빨라진 성능개선을 이루었습니다.
+<img width="1333" height="740" alt="image" src="https://github.com/user-attachments/assets/a7e216b8-4788-4696-b65c-163d32b3d0fd" />
+
+
 
 <details>
   <summary><strong>API 명세서 펼쳐보기</strong></summary>
@@ -128,7 +140,7 @@ git clone [GitHub Repository URL]
 cd facility-access-management
 ```
 
-MySQL에서 `docs/sql/schema.sql`을 실행하여 데이터베이스와 테이블을 생성합니다.
+MySQL에서 `portfolio-core-test-data.sql`을 실행하여 데이터베이스와 테이블을 생성합니다.
 
 이후 `application.properties`의 DB 접속 정보를 자신의 환경에 맞게 설정합니다.
 
