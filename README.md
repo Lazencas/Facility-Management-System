@@ -51,7 +51,13 @@ JAVA Spring/Framework Mybatis MySQL Junit
 
 - **권한 및 상태 기반 접근 제어**  
 사용자 권한, 요청 상태, 승인 유효기간 등을 검증하여 실제 시설 접근 가능 여부를 판단합니다.
+<details>
+  <summary><strong>자세히</strong></summary>
+
+  <br>
 <img width="1200" height="766" alt="image" src="https://github.com/user-attachments/assets/716aee6b-82de-4a5a-96db-d72606112978" />  
+
+</details>
 
 &nbsp;
 
