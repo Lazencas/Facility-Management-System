@@ -16,6 +16,31 @@ Facility Access Management는 사용자가 특정 시설에 대한 접근을 요
 JAVA Spring/Framework Mybatis MySQL Junit
 
 ## 3. 핵심 기능
+- **RESTful API 지향**  
+자원과 행위를 분리한 API를 설계하여 RESTful한 API를 지향했습니다.
+<details>
+  <summary><strong>API 명세서 펼쳐보기</strong></summary>
+
+  <br>
+
+  | 기능 | 메소드 | URL | 요청 | 응답 | 권한 |
+| --- | --- | --- | --- | --- | --- |
+| 로그인 | `POST` | `/login` | Body(JSON): `loginId`, `password` | `200 OK` 로그인 성공 / `401 Unauthorized` 로그인 실패 | PUBLIC |
+| 로그아웃 | `POST` | `/logout` | 없음 | `200 OK` 로그아웃 성공 | USER / ADMIN |
+| 시설 목록 조회 | `GET` | `/facilities` | 없음 | `200 OK` `List<Facility>` | USER / ADMIN |
+| 시설 상세 조회 | `GET` | `/facilities/{facilityId}` | Path: `facilityId` | `200 OK` `Facility` / `404 Not Found` | USER / ADMIN |
+| 시설 등록 | `POST` | `/admin/facilities` | Body(JSON): `name`, `location`, `description` | `200 OK` 등록된 `Facility` | ADMIN |
+| 시설 수정 | `PUT` | `/admin/facilities/{facilityId}` | Path: `facilityId` + Body(JSON): `name`, `location`, `description` | `200 OK` 수정된 `Facility` / `404 Not Found` | ADMIN |
+| 시설 비활성화 | `POST` | `/admin/facilities/{facilityId}/deactivate` | Path: `facilityId` | `200 OK` `"시설 비활성화 성공"` / `404 Not Found` | ADMIN |
+| 접근 신청 | `POST` | `/access-requests` | Body(JSON): `facilityId`, `requestReason`, `accessStartAt`, `accessEndAt` | `200 OK` 생성된 `AccessRequest` | USER / ADMIN |
+| 접근 신청 취소 | `POST` | `/access-requests/{accessRequestId}/cancel` | Path: `accessRequestId` | `200 OK` 취소 성공 | 신청자 본인 |
+| 관리자 접근 신청 조회·검색 | `GET` | `/admin/access-requests` | Query: `userId`, `facilityId`, `status`, `from`, `to` (선택) | `200 OK` `List<AccessRequest>` | ADMIN |
+| 접근 신청 승인 | `POST` | `/admin/access-requests/{accessRequestId}/approve` | Path: `accessRequestId` | `200 OK` 승인 성공 | ADMIN |
+| 접근 신청 반려 | `POST` | `/admin/access-requests/{accessRequestId}/reject` | Path: `accessRequestId` + `rejectReason` | `200 OK` 반려 성공 | ADMIN |
+| 시설 접근 시도 | `POST` | `/facilities/{facilityId}/access` | Path: `facilityId` | `200 OK` `ALLOWED` 또는 `DENIED` | USER / ADMIN |
+| 접근 로그 조회·검색 | `GET` | `/admin/access-logs` | Query: `userName`, `facilityName`, `result`, `from`, `to` (선택) | `200 OK` `List<AccessLog>` | ADMIN |
+</details>
+
 - **접근 요청 및 승인 관리**  
 사용자의 시설 접근 요청을 등록하고, 관리자가 승인·반려할 수 있도록 구현했습니다.
 <img width="669" height="184" alt="image" src="https://github.com/user-attachments/assets/ab800c48-b8a4-4599-95f4-268599709a7e" />
@@ -42,30 +67,6 @@ JAVA Spring/Framework Mybatis MySQL Junit
 
 
 ## 4. 아키텍쳐
-### 4.1 API 명세서
-<details>
-  <summary><strong>API 명세서 펼쳐보기</strong></summary>
-
-  <br>
-
-  | 기능 | 메소드 | URL | 요청 | 응답 | 권한 |
-| --- | --- | --- | --- | --- | --- |
-| 로그인 | `POST` | `/login` | Body(JSON): `loginId`, `password` | `200 OK` 로그인 성공 / `401 Unauthorized` 로그인 실패 | PUBLIC |
-| 로그아웃 | `POST` | `/logout` | 없음 | `200 OK` 로그아웃 성공 | USER / ADMIN |
-| 시설 목록 조회 | `GET` | `/facilities` | 없음 | `200 OK` `List<Facility>` | USER / ADMIN |
-| 시설 상세 조회 | `GET` | `/facilities/{facilityId}` | Path: `facilityId` | `200 OK` `Facility` / `404 Not Found` | USER / ADMIN |
-| 시설 등록 | `POST` | `/admin/facilities` | Body(JSON): `name`, `location`, `description` | `200 OK` 등록된 `Facility` | ADMIN |
-| 시설 수정 | `PUT` | `/admin/facilities/{facilityId}` | Path: `facilityId` + Body(JSON): `name`, `location`, `description` | `200 OK` 수정된 `Facility` / `404 Not Found` | ADMIN |
-| 시설 비활성화 | `POST` | `/admin/facilities/{facilityId}/deactivate` | Path: `facilityId` | `200 OK` `"시설 비활성화 성공"` / `404 Not Found` | ADMIN |
-| 접근 신청 | `POST` | `/access-requests` | Body(JSON): `facilityId`, `requestReason`, `accessStartAt`, `accessEndAt` | `200 OK` 생성된 `AccessRequest` | USER / ADMIN |
-| 접근 신청 취소 | `POST` | `/access-requests/{accessRequestId}/cancel` | Path: `accessRequestId` | `200 OK` 취소 성공 | 신청자 본인 |
-| 관리자 접근 신청 조회·검색 | `GET` | `/admin/access-requests` | Query: `userId`, `facilityId`, `status`, `from`, `to` (선택) | `200 OK` `List<AccessRequest>` | ADMIN |
-| 접근 신청 승인 | `POST` | `/admin/access-requests/{accessRequestId}/approve` | Path: `accessRequestId` | `200 OK` 승인 성공 | ADMIN |
-| 접근 신청 반려 | `POST` | `/admin/access-requests/{accessRequestId}/reject` | Path: `accessRequestId` + `rejectReason` | `200 OK` 반려 성공 | ADMIN |
-| 시설 접근 시도 | `POST` | `/facilities/{facilityId}/access` | Path: `facilityId` | `200 OK` `ALLOWED` 또는 `DENIED` | USER / ADMIN |
-| 접근 로그 조회·검색 | `GET` | `/admin/access-logs` | Query: `userName`, `facilityName`, `result`, `from`, `to` (선택) | `200 OK` `List<AccessLog>` | ADMIN |
-</details>
-
 ### 4.1 ERD
 <details>
   <summary><strong>ERD 펼쳐보기</strong></summary>
